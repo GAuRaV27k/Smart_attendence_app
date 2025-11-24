@@ -4,9 +4,14 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:practice/theme.dart';
 import 'signup.dart';
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
+  @override
+  State<LoginPage> createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     double fieldWidth = MediaQuery.of(context).size.width * 0.88;
@@ -45,10 +50,45 @@ class LoginPage extends StatelessWidget {
 
                 const SizedBox(height: 40),
 
-                buildTextField(fieldWidth, "Email"),
+                Container(
+                    width: fieldWidth,
+                    height: 55,
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.7),
+                      borderRadius: BorderRadius.circular(30),
+                      border: Border.all(color: const Color(0xFFFFDF00), width: 1),
+                    ),
+                    child: TextField(
+                        obscureText: false,
+                        decoration: InputDecoration(
+
+                          prefixIcon: Icon(Icons.email,color: Colors.grey,),
+                          border: InputBorder.none,
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 25, vertical: 15),
+                          hintText: "Email",
+                          hintStyle: TextStyle(color: Colors.grey[400],fontFamily: 'sub_disney'),
+                        ))),
                 const SizedBox(height: 16),
 
-                buildTextField(fieldWidth, "Password", obscure: true),
+                Container(
+                    width: fieldWidth,
+                    height: 55,
+                    decoration: BoxDecoration(
+                      color: Colors  .white.withOpacity(0.7),
+                      borderRadius: BorderRadius.circular(30),
+                      border: Border.all(color: const Color(0xFFFFDF00), width: 1),
+                    ),
+                    child: TextField(
+
+                        obscureText: true,
+                        decoration: InputDecoration(
+                          border: InputBorder.none,
+                          prefixIcon: Icon(Icons.key_rounded,color: Colors.grey,),
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 25, vertical: 15),
+                          hintText: "Password",
+                          hintStyle: TextStyle(color: Colors.grey[400],fontFamily: 'sub_disney'),
+                          suffixIcon: Icon(Icons.visibility_off,color: Colors.grey,)
+                        ))),
                 const SizedBox(height: 25),
 
                 SizedBox(
@@ -64,11 +104,7 @@ class LoginPage extends StatelessWidget {
                     onPressed: () {},
                     child: Text(
                       "Login",
-                      style: GoogleFonts.poppins(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.white,
-                      ),
+                      style: TextStyle(fontFamily: "disney",fontSize: 18,fontWeight: FontWeight.w600,color: Colors.white),
                     ),
                   ),
                 ),
@@ -127,24 +163,4 @@ class LoginPage extends StatelessWidget {
     );
   }
 
-  Widget buildTextField(double width, String hint, {bool obscure = false}) {
-    return Container(
-
-        width: width,
-        height: 55,
-        decoration: BoxDecoration(
-
-          color: Colors.white.withOpacity(0.7),
-          borderRadius: BorderRadius.circular(30),
-          border: Border.all(color: const Color(0xFFFFDF00), width: 1),
-        ),
-        child: TextField(
-            obscureText: obscure,
-            decoration: InputDecoration(
-              border: InputBorder.none,
-              contentPadding: const EdgeInsets.symmetric(horizontal: 25, vertical: 15),
-              hintText: hint,
-              hintStyle: TextStyle(color: Colors.grey[400],fontFamily: 'sub_disney'),
-            )));
-  }
 }
