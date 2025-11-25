@@ -79,8 +79,10 @@ class SignUpPage extends StatelessWidget {
                       elevation: 4,
                     ),
                     onPressed: () {
-                      // ignore: avoid_print
-                      print("Create");
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const SignUpPage()),
+                      );
                     },
                     child: const Text(
                       "Create",

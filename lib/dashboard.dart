@@ -12,24 +12,46 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
+      home: dashboard(),
       debugShowCheckedModeBanner: false,
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  final String title;
-
+class dashboard extends StatefulWidget {
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  _dashboardState createState() => _dashboardState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _dashboardState extends State<dashboard> {
+  Color getProgressColor() {
+    if (attandance < 0.55) {
+      return Colors.red;
+    } else if (attandance < 0.75) {
+      return Colors.orange;
+    } else {
+      return Colors.green;
+    }
+  }
+   String status(){
+    if (attandance >= 0.90){
+      return "Excellent";
+    }
+    else if (attandance < 0.90 && attandance >= 0.75){
+      return "Good";
+    }
+    else if (attandance < 0.75 && attandance >= 0.5){
+      return "Average !Improve!";
+    }
+    else{
+      return "Poor!! It's Sucks";
+    }
+
+   }
+  double attandance = 0.25;
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       // ------------------ APPBAR ------------------
       appBar: AppBar(
@@ -37,176 +59,256 @@ class _MyHomePageState extends State<MyHomePage> {
         elevation: 0,
         title: Row(
           children: [
-            IconButton(
-              icon: const Icon(Icons.menu),
-              onPressed: () {},
-            ),
+            // Icon(Icons.menu, color: Colors.black),
             Expanded(
               child: Center(
                 child: Text(
                   "Smart Attendance",
-                  style: TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold,
+                  style: GoogleFonts.irishGrover(
+                    fontSize: 30,
+                    fontWeight: FontWeight.bold
                   ),
                 ),
               ),
             ),
-            IconButton(
-              icon: const Icon(Icons.person),
-              onPressed: () {},
+            CircleAvatar(
+              radius: 16,
+              backgroundColor: Colors.deepPurpleAccent,
+              child: Text("A", style: TextStyle(color: Colors.white)),
+            )
+          ],
+        ),
+      ),
+      // ---------------Navigation Drawar
+      drawer: Drawer(
+        child: Column(
+          children: [
+            DrawerHeader(
+              child: Text("Your Name"),
+            ),
+
+            ListTile(
+              leading: Icon(Icons.home),
+              title: Text("Home"),
+            ),
+            ListTile(
+              leading: Icon(Icons.settings),
+              title: Text("Settings"),
             ),
           ],
         ),
       ),
 
+
       // ------------------ BODY ------------------
       body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Center(
-            child: Column(
-              children: [
-                const SizedBox(height: 10),
+        child: Center(
+          child: Column(
+            children: [
+              const SizedBox(height: 15),
 
-                // ------------------ MAIN ATTENDANCE CARD ------------------
-                Container(
-                  margin: EdgeInsets.only(top: 10),
-                  width: 350,
-                  height: 265,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(46),
-                    border: Border.all(color: Colors.black12, width: 2),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.blueAccent.shade200.withOpacity(0.4),
-                        spreadRadius: 2,
-                        blurRadius: 12,
-                        offset: Offset(0, 6),
-                      ),
-                    ],
-                  ),
+              // ------------------ MAIN ATTENDANCE CARD ------------------
+              Container(
+                padding: EdgeInsets.all(20),
+                width: 373,
+                decoration: BoxDecoration(
+                  color: Color(0xFFF5E7C6),
+                  borderRadius: BorderRadius.circular(46),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Color(0xFFFF6D1F),
+                      blurRadius: 10,
+                      offset: Offset(0, 4),
+                    ),
+                  ],
+                ),
 
-                  child: Padding(
-                    padding: const EdgeInsets.all(20.0),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    // Circle + Title
+                    Row(
                       children: [
-                        // ------------------ CIRCULAR INDICATOR ------------------
                         CircularPercentIndicator(
-                          radius: 45.0,
+                          radius: 40.0,
                           lineWidth: 10.0,
-                          percent: 0.25,
+                          percent: attandance,
                           animation: true,
-                          animationDuration: 1200,
                           center: Text(
-                            "25 %",
+                            "${(attandance * 100).toInt()}%"
+                          ,
                             style: TextStyle(
-                              fontSize: 18,
+                              fontSize: 16,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
                           circularStrokeCap: CircularStrokeCap.round,
-                          progressColor: Colors.greenAccent,
-                          backgroundColor:
-                          Colors.grey.shade400.withOpacity(.2),
+
+                          progressColor: getProgressColor(),
+                          backgroundColor: Colors.grey.shade300,
                         ),
-
-                        const SizedBox(width: 20),
-
-                        // ------------------ RIGHT SIDE CONTENT ------------------
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                "Attendance",
-                                style: GoogleFonts.irishGrover(
-                                  fontSize: 28,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-
-                              const SizedBox(height: 15),
-
-                              // PRESENT / ABSENT BUTTON ROW
-                              Row(
-                                children: [
-                                  // PRESENT BUTTON
-                                  Expanded(
-                                    child: Container(
-                                      padding: EdgeInsets.symmetric(
-                                          vertical: 10),
-                                      decoration: BoxDecoration(
-                                        color:
-                                        Colors.greenAccent.shade100,
-                                        borderRadius:
-                                        BorderRadius.circular(20),
-                                      ),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                        MainAxisAlignment.center,
-                                        children: [
-                                          Icon(Icons.check,
-                                              color: Colors.green),
-                                          SizedBox(width: 6),
-                                          Text(
-                                            "Present",
-                                            style: TextStyle(
-                                                fontWeight:
-                                                FontWeight.w600),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-
-                                  SizedBox(width: 10),
-
-                                  // ABSENT BUTTON
-                                  Expanded(
-                                    child: Container(
-                                      padding: EdgeInsets.symmetric(
-                                          vertical: 10),
-                                      decoration: BoxDecoration(
-                                        color: Colors.red.shade200,
-                                        borderRadius:
-                                        BorderRadius.circular(20),
-                                      ),
-                                      child: Center(
-                                        child: Text(
-                                          "Absent",
-                                          style: TextStyle(
-                                              fontWeight:
-                                              FontWeight.w600),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
+                        SizedBox(width: 30),
+                        Text(
+                          "ATTENDANCE",
+                          style: GoogleFonts.irishGrover(
+                            fontSize: 30,
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
                       ],
                     ),
-                  ),
-                ),
 
-                // ------------------ OTHER BOXES ------------------
-                _buildCard(),
-                _buildCard(),
-                _buildCard(),
-              ],
-            ),
+                    SizedBox(height: 20),
+
+                    // -------- PRESENT / ABSENT BUTTONS --------
+                    Row(
+                      children: [
+                        Expanded(
+                          child: ElevatedButton(
+                            onPressed: () {
+                              setState(() {
+                                attandance +=0.05;
+                              });
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.green,
+                              padding: EdgeInsets.symmetric(vertical: 12),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(30),
+                              ),
+                            ),
+                            child: Text("Present",
+                                style: TextStyle(
+                                    color: Colors.white, fontWeight: FontWeight.bold)),
+                          ),
+                        ),
+                        SizedBox(width: 10),
+                        Expanded(
+                          child: ElevatedButton(
+                            onPressed: () {
+                              setState(() {
+                                attandance -= 0.01;   // increase 2%
+                              });
+                            }
+                            ,
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.red,
+                              padding: EdgeInsets.symmetric(vertical: 12),
+
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(30),
+                              ),
+                            ),
+                            child: Text("Absent",
+                                style: TextStyle(
+                                    color: Colors.white, fontWeight: FontWeight.bold)),
+                          ),
+                        ),
+                      ],
+                    ),
+
+                    SizedBox(height: 10),
+
+                    // STATUS SECTION
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        "Status",
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          decoration:TextDecoration.underline,
+                          decorationThickness: 2,
+                        ),
+                      ),
+                    ),
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        status(),
+                        style: GoogleFonts.italiana(
+                          fontSize: 28,
+                          fontWeight: FontWeight.w900,
+                          // fontStyle: FontStyle.italic
+                          color: getProgressColor(),
+                        ),
+                      ),
+                    ),
+
+                    SizedBox(height: 20),
+
+                    // Upcoming Attendance
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        "Upcoming Attendance",
+                        style: GoogleFonts.irishGrover(
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+
+                    SizedBox(height: 15),
+
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Container(
+                            padding: EdgeInsets.symmetric(vertical: 10),
+                            decoration: BoxDecoration(
+                              color: Colors.green.shade100,
+                              borderRadius: BorderRadius.circular(25),
+                            ),
+                            child: Center(
+                              child: Text(
+                                "Present +2%",
+                                style: TextStyle(
+                                  color: Colors.green,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: 10),
+                        Expanded(
+                          child: Container(
+                            padding: EdgeInsets.symmetric(vertical: 10),
+                            decoration: BoxDecoration(
+                              color: Colors.red.shade100,
+                              borderRadius: BorderRadius.circular(25),
+                            ),
+                            child: Center(
+                              child: Text(
+                                "Absent -2%",
+                                style: TextStyle(
+                                  color: Colors.red,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+
+              SizedBox(height: 20),
+
+              // Dummy cards (optional)
+              _buildCard(),
+              _buildCard(),
+              _buildCard(),
+            ],
           ),
         ),
       ),
     );
   }
 
-  // ------------------ REUSABLE CARD FUNCTION ------------------
   Widget _buildCard() {
     return Container(
       margin: EdgeInsets.only(top: 10),

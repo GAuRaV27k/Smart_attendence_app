@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:practice/theme.dart';
 import 'signup.dart';
+import 'dashboard.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -101,7 +102,13 @@ class _LoginPageState extends State<LoginPage> {
                         borderRadius: BorderRadius.circular(30),
                       ),
                     ),
-                    onPressed: () {},
+                      onPressed: () {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(builder: (context) => dashboard()),
+                        );
+                      },
+
                     child: Text(
                       "Login",
                       style: TextStyle(fontFamily: "disney",fontSize: 18,fontWeight: FontWeight.w600,color: Colors.white),
