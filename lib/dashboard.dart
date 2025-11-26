@@ -19,28 +19,36 @@ class MyApp extends StatelessWidget {
 }
 
 class dashboard extends StatefulWidget {
+  // bool isExpanded = true;
   @override
   _dashboardState createState() => _dashboardState();
 }
 
 class _dashboardState extends State<dashboard> {
+  bool isExpanded = true;
+  bool isOpenDS = true;
+  bool isOpenPS =true;
+  bool isOpenAI = true;
+  bool isOpenTC = true;
+  bool isOpenOPS =true;
+
   Color getProgressColor() {
-    if (attandance < 0.55) {
+    if (attendance < 0.55) {
       return Colors.red;
-    } else if (attandance < 0.75) {
+    } else if (attendance < 0.75) {
       return Colors.orange;
     } else {
       return Colors.green;
     }
   }
    String status(){
-    if (attandance >= 0.90){
+    if (attendance >= 0.90){
       return "Excellent";
     }
-    else if (attandance < 0.90 && attandance >= 0.75){
+    else if (attendance < 0.90 && attendance >= 0.75){
       return "Good";
     }
-    else if (attandance < 0.75 && attandance >= 0.5){
+    else if (attendance < 0.75 && attendance >= 0.5){
       return "Average !Improve!";
     }
     else{
@@ -48,11 +56,19 @@ class _dashboardState extends State<dashboard> {
     }
 
    }
-  double attandance = 0.25;
+  double attendance = 0.25;
+
   @override
+
   Widget build(BuildContext context) {
+    // keep percent between 0 and 1
+    double percent = attendance.clamp(0.0, 1.0).toDouble();
+
+    // convert to 0–100 for display
+    int displayPercent = (percent * 100).round();
 
     return Scaffold(
+
       // ------------------ APPBAR ------------------
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -132,11 +148,11 @@ class _dashboardState extends State<dashboard> {
                         CircularPercentIndicator(
                           radius: 40.0,
                           lineWidth: 10.0,
-                          percent: attandance,
+                          percent: percent,
                           animation: true,
                           center: Text(
-                            "${(attandance * 100).toInt()}%"
-                          ,
+                            "${(percent * 100).toStringAsFixed(1)}%"
+                            ,
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
@@ -167,7 +183,7 @@ class _dashboardState extends State<dashboard> {
                           child: ElevatedButton(
                             onPressed: () {
                               setState(() {
-                                attandance +=0.05;
+                                attendance =(attendance + 0.05).clamp(0.0, 1.0).toDouble();
                               });
                             },
                             style: ElevatedButton.styleFrom(
@@ -187,7 +203,7 @@ class _dashboardState extends State<dashboard> {
                           child: ElevatedButton(
                             onPressed: () {
                               setState(() {
-                                attandance -= 0.01;   // increase 2%
+                                attendance =(attendance - 0.02).clamp(0.0, 1.0).toDouble(); // decrease
                               });
                             }
                             ,
@@ -296,12 +312,114 @@ class _dashboardState extends State<dashboard> {
                 ),
               ),
 
-              SizedBox(height: 20),
+              SizedBox(height: 50),
 
-              // Dummy cards (optional)
-              _buildCard(),
-              _buildCard(),
-              _buildCard(),
+
+              Column(
+                children: [
+
+                  Column(
+                    children: [
+                      InkWell(
+                        onTap: () {
+                          setState(() {
+                            isOpenOPS = !isOpenOPS;
+                          });
+                        },
+                        child: _buildAnimatedCard(
+                            child: Text("OOPS",
+                                style: GoogleFonts.permanentMarker(fontSize: 25))),
+                      ),
+                      _buildAnimation(isOpenOPS),
+                    ],
+                  ),
+
+                  Column(
+                    children: [
+                      InkWell(
+                          onTap: () {
+                            setState(() {
+                              isOpenDS = !isOpenDS;
+                            });
+                          },
+                          child: _buildAnimatedCard(
+                              child: Text("Data Structure", style: GoogleFonts.permanentMarker(fontSize: 25)))),
+                      _buildAnimation(isOpenDS),
+                    ],
+                  ),
+
+
+                  Column(
+                    children: [
+                      InkWell(
+                        onTap:(){
+                          setState(() {
+                            isOpenPS = !isOpenPS;
+                          });
+                        },
+                        child: _buildAnimatedCard(
+                            child: Text("Probability and Statistics",
+                                style: GoogleFonts.permanentMarker(fontSize: 25))),
+                      ),
+                      _buildAnimation(isOpenPS)
+                    ],
+                  ),
+
+
+                  Column(
+                    children: [
+                      InkWell(
+                        onTap: (){
+                          setState(() {
+                            isOpenAI = !isOpenAI;
+                          });
+                        },
+                        child: _buildAnimatedCard(
+                            child: Text("AI", style: GoogleFonts.permanentMarker(fontSize: 25))),
+                      ),
+                      _buildAnimation(isOpenAI),
+                    ],
+                  ),
+
+                  Column(
+                    children: [
+                      InkWell(
+                        onTap: (){
+                          setState(() {
+                            isOpenTC = !isOpenTC;
+                          });
+                        },
+
+                        child: _buildAnimatedCard(
+                            child: Text("Technical Communication",
+                                style: GoogleFonts.permanentMarker(fontSize: 25))),
+                      ),
+                      _buildAnimation(isOpenTC),
+                    ],
+                  ),
+
+                  const SizedBox(height: 50,),
+
+
+
+
+
+                  Container(
+                    width: 200,
+                    height: 50,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        setState(() {
+                          isExpanded = !isExpanded;
+                        });
+                      },
+
+                      child: Text(isExpanded ? "Collapse" : "Expand",style: GoogleFonts.questrial(fontSize:20,fontWeight: FontWeight.w900)),
+                    ),
+                  ),
+
+                ],
+              ),
             ],
           ),
         ),
@@ -309,23 +427,62 @@ class _dashboardState extends State<dashboard> {
     );
   }
 
-  Widget _buildCard() {
-    return Container(
-      margin: EdgeInsets.only(top: 10),
-      width: 350,
-      height: 130,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(46),
-        border: Border.all(color: Colors.black12, width: 2),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.blueAccent.shade200.withOpacity(0.4),
-            spreadRadius: 2,
-            blurRadius: 12,
-            offset: Offset(0, 6),
-          ),
-        ],
+  Widget _buildAnimatedCard({required Widget child}) {
+    return AnimatedAlign(
+      duration: Duration(milliseconds: 700),
+      curve: Curves.elasticInOut,
+      alignment: Alignment.center,
+      heightFactor: isExpanded ? 1.2 : 0.15,
+      child: AnimatedScale(
+        duration: Duration(milliseconds: 700),
+        curve: Curves.elasticInOut,
+        scale: isExpanded ? 1.0 : 0.8,
+        child: _buildCard(
+            child: child as Text), // Assumes child is always a Text widget
+      ),
+    );
+  }
+  Widget _buildAnimation(bool isOpen){
+    return AnimatedSize(
+      duration: Duration(milliseconds: 400),
+      curve: Curves.easeInOut,
+      child: isOpen && isExpanded
+          ? Container(
+        padding: EdgeInsets.all(16),
+        margin: EdgeInsets.only(bottom: 10),
+        decoration: BoxDecoration(
+          color: Colors.orange.shade50,
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Text("Dropdown content here"),
+      )
+          : SizedBox(),
+    );
+  }
+  Widget _buildCard({required Text child}) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Container(
+
+        margin: EdgeInsets.only(top: 10),
+        width: 390,
+        height: 70,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(30),
+          border: Border.all(color: Colors.black12, width: 2),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.blueAccent.shade200.withOpacity(0.4),
+              spreadRadius: 2,
+              blurRadius: 12,
+              offset: Offset(0, 6),
+            ),
+          ],
+        ),
+        child: Center(
+          child: child,
+        ),
       ),
     );
   }
